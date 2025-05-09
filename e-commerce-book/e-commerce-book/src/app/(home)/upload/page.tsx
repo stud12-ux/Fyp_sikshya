@@ -54,28 +54,33 @@ const BookForm = () => {
         return;
       }
 
-      const uploadedUrl = await handleFileUpload(pdfFile);
+      // Read PDF as base64
+      const reader = new FileReader();
+      reader.readAsDataURL(pdfFile);
 
-      if (!uploadedUrl) {
-        setErrMsg({ message: "PDF upload failed.", status: "failed" });
+      reader.onload = async () => {
+        const base64PDF = reader.result;
+
+        const payload = {
+          ...data,
+          pdf: base64PDF, // base64 encoded string
+          userId: user.id,
+        };
+
+        const res = await apiRequest({
+          url: "/note/upload-pdf",
+          data: payload,
+          method: "POST",
+        });
+
+        setErrMsg(res);
         setIsSubmitting(false);
-        return;
-      }
-
-      const payload = {
-        ...data,
-        pdf: uploadedUrl,
-        userId: user.id,
       };
 
-      const res = await apiRequest({
-        url: "/note/upload-pdf",
-        data: payload,
-        method: "POST",
-      });
-
-      setErrMsg(res);
-      setIsSubmitting(false);
+      reader.onerror = () => {
+        setErrMsg({ message: "Failed to read PDF file.", status: "failed" });
+        setIsSubmitting(false);
+      };
     } catch (error) {
       console.log(error);
       setIsSubmitting(false);
@@ -189,7 +194,9 @@ const BookForm = () => {
             </form>
           </div>
         </div>
-      ): (<UploadBookForm/>)}
+      ) : (
+        <UploadBookForm />
+      )}
     </div>
   );
 };

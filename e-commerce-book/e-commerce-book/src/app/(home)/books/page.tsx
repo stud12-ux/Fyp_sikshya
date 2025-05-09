@@ -119,7 +119,7 @@ export default function Product() {
           <div className="w-full md:w-3/4 mb-10 h-full">
             <SectionHeader smallTitle="Read Books / Notes" className="mb-4" />
             {loading ? (
-              <p className="text-center">Loading books...</p>
+              <p className="text-center">Loading notes...</p>
             ) : (
               <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {notes.map((book) => (

@@ -1,6 +1,6 @@
 import express from "express";
 
-import { UploadBook, UploadNote, UserUploadBooks, UserUploadNotes, fetchBooks, fetchNotes } from "../controllers/bookController.js";
+import { UploadBook, UploadNote, UserUploadBooks, UserUploadNotes, fetchBooks, fetchNotes, ViewNotePDF } from "../controllers/bookController.js";
 
 const router = express.Router();
 
@@ -15,5 +15,7 @@ router.post("/upload-book", UploadBook);
 // Route to get all notes
 router.get("/fetch-books", fetchBooks);
 router.get("/user-upload-books", UserUploadBooks);
+router.get("/view-pdf/:id", ViewNotePDF);
+
 
 export default router;

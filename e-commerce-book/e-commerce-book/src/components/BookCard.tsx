@@ -10,7 +10,17 @@ import useUserStore from "@/store/useUserStore";
 import bookImage from "@/assets/images/book1.png";
 import { apiRequest } from "@/utils/index"; // Import your apiRequest function
 
-const BookCard = ({ name, pdf, desc, _id }: {name:string; pdf:string; desc:string; _id:string;}) => {
+const BookCard = ({
+  name,
+  pdf,
+  desc,
+  _id,
+}: {
+  name: string;
+  pdf: string;
+  desc: string;
+  _id: string;
+}) => {
   const user = useUserStore((state) => state.user);
   const { items: cart, addToCart } = useCartStore();
 
@@ -60,7 +70,7 @@ const BookCard = ({ name, pdf, desc, _id }: {name:string; pdf:string; desc:strin
     console.log("Submitting comment with data:", {
       comment: newComment,
       userId: user.id,
-      noteId: _id
+      noteId: _id,
     });
 
     try {
@@ -83,7 +93,7 @@ const BookCard = ({ name, pdf, desc, _id }: {name:string; pdf:string; desc:strin
       }
     } catch (error) {
       console.error("Failed to submit comment", error);
-      console.log("This is the id", _id)
+      console.log("This is the id", _id);
     }
   };
 
@@ -118,14 +128,24 @@ const BookCard = ({ name, pdf, desc, _id }: {name:string; pdf:string; desc:strin
           Save to WishList
         </button>
 
-        <a
-          href={pdf}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={async () => {
+            try {
+              const response = await fetch(`http://localhost:8800/note/view-pdf/${_id}`);
+              if (!response.ok) throw new Error("Failed to fetch PDF");
+
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              window.open(url, "_blank");
+            } catch (err) {
+              toast.error("Could not load PDF");
+              console.error(err);
+            }
+          }}
           className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition duration-300"
         >
           View PDF
-        </a>
+        </button>
       </div>
 
       {/* COMMENT SECTION */}
